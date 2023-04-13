@@ -6,6 +6,7 @@ import {
 import localStorage from "redux-persist/lib/storage";
 import { persistReducer, persistStore } from "redux-persist";
 import { encryptTransform } from "redux-persist-transform-encrypt";
+import reducer from "../reducers/reducer";
 
 const persistConfig = {
   key: "root",
@@ -17,7 +18,9 @@ const persistConfig = {
   ],
 };
 
-const bigReducer = combineReducers({});
+const bigReducer = combineReducers({
+  reducer: reducer,
+});
 
 const persistedReducer = persistReducer(persistConfig, bigReducer);
 
