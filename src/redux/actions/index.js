@@ -23,14 +23,12 @@ export const fetchDataFailure = (error) => {
   };
 };
 
-export const fetchData = () => {
+export const fetchData = (url) => {
   return async (dispatch) => {
     dispatch(fetchDataRequest());
 
     try {
-      const result = await axios.get(
-        "https://api.github.com/repos/facebook/react/issues"
-      );
+      const result = await axios.get(`${url}`);
 
       if (!Array.isArray(result.data)) {
         throw new Error("Data is not an array");
