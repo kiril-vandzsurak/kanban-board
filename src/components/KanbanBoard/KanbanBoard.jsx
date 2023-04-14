@@ -28,6 +28,7 @@ const KanbanBoard = () => {
                   editor: task.user.login,
                 },
               ],
+              position: "todo", // Add the position property with an initial value of "todo"
             })),
           },
           {
@@ -47,6 +48,13 @@ const KanbanBoard = () => {
     };
 
     fetchData();
+    // const storedData = localStorage.getItem("data");
+    // if (storedData) {
+    //   setData(JSON.parse(storedData));
+    // }
+    // window.addEventListener("beforeunload", () => {
+    //   localStorage.setItem("data", JSON.stringify(data));
+    // });
   }, []);
 
   const onDragEnd = (result) => {
@@ -65,13 +73,16 @@ const KanbanBoard = () => {
       const sourceTask = [...sourceCol.tasks];
       const destinationTask = [...destinationCol.tasks];
 
-      const [removed] = sourceTask.splice(source.index, 1);
-      destinationTask.splice(destination.index, 0, removed);
+      const [movedTask] = sourceTask.splice(source.index, 1);
+      movedTask.position = destination.droppableId; // Update the position property of the moved task
+
+      destinationTask.splice(destination.index, 0, movedTask);
 
       data[sourceColIndex].tasks = sourceTask;
       data[destinationColIndex].tasks = destinationTask;
 
       setData(data);
+      //localStorage.setItem("data", JSON.stringify(data));
     }
   };
 
@@ -104,7 +115,12 @@ const KanbanBoard = () => {
                             opacity: snapshot.isDragging ? "0.5" : "1",
                           }}
                         >
-                          <Card updates={task.updates}>{task.title}</Card>
+                          <Card key={task.id} updates={task.updates}>
+                            {task.title}
+                            <div className="kanban__card__position">
+                              Current issue position: {task.position}
+                            </div>
+                          </Card>
                         </div>
                       )}
                     </Draggable>
