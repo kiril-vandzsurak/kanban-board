@@ -1,3 +1,4 @@
+import { Octokit } from "octokit";
 import axios from "axios";
 export const FETCH_DATA_REQUEST = "FETCH_DATA_REQUEST";
 export const FETCH_DATA_SUCCESS = "FETCH_DATA_SUCCESS";
@@ -23,22 +24,44 @@ export const fetchDataFailure = (error) => {
   };
 };
 
+function extractOwnerAndRepoFromUrl(url) {
+  const regex = /^https?:\/\/github\.com\/([^/]+)\/([^/]+)/;
+  const match = url.match(regex);
+  if (!match) {
+    throw new Error("Invalid GitHub URL");
+  }
+  const owner = match[1];
+  const repo = match[2];
+  return { owner, repo };
+}
+
 export const fetchData = (url) => {
+  const octokit = new Octokit({
+    auth: `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`,
+  });
+
   return async (dispatch) => {
     dispatch(fetchDataRequest());
 
     try {
-      const result = await axios.get(`${url}`);
+      const { owner, repo } = extractOwnerAndRepoFromUrl(url);
+      const { data } = await octokit.request(
+        "GET /repos/{owner}/{repo}/issues",
+        {
+          owner,
+          repo,
+        }
+      );
 
-      if (!Array.isArray(result.data)) {
+      if (!Array.isArray(data)) {
         throw new Error("Data is not an array");
       }
 
-      const data = [
+      const processedData = [
         {
           id: "todo",
           title: "To do",
-          tasks: result.data.map((task) => ({
+          tasks: data.map((task) => ({
             id: task.id.toString(),
             title: task.title,
             updates: [
@@ -61,7 +84,7 @@ export const fetchData = (url) => {
         },
       ];
 
-      dispatch(fetchDataSuccess(data));
+      dispatch(fetchDataSuccess(processedData));
     } catch (error) {
       dispatch(fetchDataFailure(error.message));
     }

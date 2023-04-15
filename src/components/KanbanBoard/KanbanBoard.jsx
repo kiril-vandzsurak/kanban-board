@@ -16,7 +16,7 @@ const KanbanBoard = () => {
   // }, [dispatch]);
 
   const data = useSelector((state) => state.reducer.data);
-  console.log(data);
+  //console.log(data);
 
   const onDragEnd = (result) => {
     if (!result.destination) return;
@@ -53,14 +53,16 @@ const KanbanBoard = () => {
             <Form.Control
               type="email"
               placeholder="Enter REPO url"
+              value={url}
               onChange={(e) => setUrl(e.target.value)}
             />
           </Form.Group>
         </Form>
         <Button
           variant="primary"
-          type="submit"
-          onClick={() => {
+          type="button"
+          onClick={(event) => {
+            event.preventDefault();
             dispatch(fetchData(url));
             console.log("clicked");
           }}
