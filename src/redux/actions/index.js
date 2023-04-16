@@ -1,4 +1,5 @@
 import { Octokit } from "octokit";
+import axios from "axios";
 export const FETCH_DATA_REQUEST = "FETCH_DATA_REQUEST";
 export const FETCH_DATA_SUCCESS = "FETCH_DATA_SUCCESS";
 export const FETCH_DATA_FAILURE = "FETCH_DATA_FAILURE";
@@ -36,7 +37,7 @@ function extractOwnerAndRepoFromUrl(url) {
 
 export const fetchData = (url) => {
   const octokit = new Octokit({
-    auth: process.env.GITHUB_TOKEN,
+    auth: `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`,
   });
 
   return async (dispatch) => {

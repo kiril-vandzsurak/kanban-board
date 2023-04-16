@@ -10,12 +10,9 @@
 }
 .kanban__section {
   width: 400px;
-  height: 800px;
-  background-color: #ced4da;
-  margin-inline: 45px;
+  background-color: #383838;
   padding: 10px;
-  border: 2px black solid;
-  overflow: auto;
+  border-radius: 10px;
 }
 .kanban__section ~ .kanban__section {
   margin-left: 10px;
@@ -24,9 +21,6 @@
   font-size: 1.2rem;
   font-weight: 700;
   margin: 10px 0 20px;
-  text-align: center;
-  color: black;
-  font-size: 25px;
 }
 .kanban__section__content > * ~ * {
   margin-top: 10px;
