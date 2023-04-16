@@ -37,7 +37,7 @@ function extractOwnerAndRepoFromUrl(url) {
 
 export const fetchData = (url) => {
   const octokit = new Octokit({
-    auth: `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`,
+    auth: process.env.GITHUB_TOKEN,
   });
 
   return async (dispatch) => {

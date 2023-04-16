@@ -1,5 +1,5 @@
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Card from "../Card/Card";
 import { fetchData } from "../../redux/actions";
 import { useDispatch } from "react-redux";
@@ -11,12 +11,7 @@ const KanbanBoard = () => {
   const dispatch = useDispatch();
   const [url, setUrl] = useState("");
 
-  // useEffect(() => {
-  //   dispatch(fetchData());
-  // }, [dispatch]);
-
   const data = useSelector((state) => state.reducer.data);
-  //console.log(data);
 
   const onDragEnd = (result) => {
     if (!result.destination) return;
@@ -44,34 +39,72 @@ const KanbanBoard = () => {
     }
   };
 
+  const cleanedUrl = url
+    .replace("https://github.com/", "")
+    .replace("/issues", "");
+  const [owner, repo] = cleanedUrl.split("/");
+  console.log(owner);
+  console.log(repo);
+
   return (
-    // "https://api.github.com/repos/facebook/react/issues"
     <div>
-      <div className="d-flex justify-content-center">
-        <Form style={{ width: "100vh" }}>
-          <Form.Group className="mb-3" controlId="formBasicEmail">
-            <Form.Control
-              type="email"
-              placeholder="Enter REPO url"
-              value={url}
-              onChange={(e) => setUrl(e.target.value)}
-            />
-          </Form.Group>
-        </Form>
-        <Button
-          variant="primary"
-          type="button"
-          onClick={(event) => {
-            event.preventDefault();
-            dispatch(fetchData(url));
-            console.log("clicked");
-          }}
+      <div>
+        <div
+          className="d-flex justify-content-around align-items-center"
+          style={{ width: "90%", marginInline: "auto" }}
         >
-          Submit
-        </Button>
+          <Form style={{ width: "80%" }}>
+            <Form.Group className="mb-3" controlId="formBasicEmail">
+              <Form.Control
+                style={{
+                  marginTop: "17px",
+                  borderRadius: "0px",
+                  border: "1px black solid",
+                }}
+                type="email"
+                placeholder="Enter REPO url"
+                value={url}
+                onChange={(e) => setUrl(e.target.value)}
+              />
+            </Form.Group>
+          </Form>
+          <Button
+            variant="dark"
+            type="button"
+            style={{
+              backgroundColor: "transparent",
+              borderRadius: "0px",
+              color: "black",
+            }}
+            onClick={(event) => {
+              event.preventDefault();
+              dispatch(fetchData(url));
+              console.log("clicked");
+            }}
+          >
+            Load issues
+          </Button>
+        </div>
+        <div style={{ width: "85%", marginInline: "auto" }}>
+          {owner && repo ? (
+            <>
+              <a
+                href={`https://github.com/${owner}`}
+                target="_blank"
+                rel="noreferrer"
+              >
+                {owner}
+              </a>
+              <span> {">"} </span>
+              <a href={url} target="_blank" rel="noreferrer">
+                {repo}
+              </a>
+            </>
+          ) : null}
+        </div>
       </div>
       <DragDropContext onDragEnd={onDragEnd}>
-        <div className="kanban">
+        <div className="kanban justify-content-center mt-5">
           {data.map((section) => (
             <Droppable key={section.id} droppableId={section.id}>
               {(provided) => (
@@ -100,9 +133,6 @@ const KanbanBoard = () => {
                           >
                             <Card key={task.id} updates={task.updates}>
                               {task.title}
-                              <div className="kanban__card__position">
-                                Current issue position: {task.position}
-                              </div>
                             </Card>
                           </div>
                         )}
